@@ -13,19 +13,35 @@ void setup() {
   Serial.begin(9600);
 }
 
-void loop() {
+//move forward for some time in miliseconds
+void moveForward(int time) {
+    digitalWrite(MOTOR_PIN1, HIGH);
+    digitalWrite(MOTOR_PIN2, HIGH);
+    delay(time);
+    digitalWrite(MOTOR_PIN1, LOW);
+    digitalWrite(MOTOR_PIN2, LOW);
+}
+
+void launchBall() {
+  //code to launch ball
+}
+
+//get distance from wall in centimeter
+float getDistanceFromWall() {
   digitalWrite(TRIG_PIN, HIGH);
   delayMicroseconds(10);
   digitalWrite(TRIG_PIN, LOW);
   int microsecs = pulseIn(ECHO_PIN, HIGH);
   float cms = microsecs * SPEED_OF_SOUND/2;
   Serial.println(cms);
-  if (cms < 30) {
-    digitalWrite(MOTOR_PIN1, LOW);
-    digitalWrite(MOTOR_PIN2, LOW);
-  } else {
-    digitalWrite(MOTOR_PIN1, HIGH);
-    digitalWrite(MOTOR_PIN2, HIGH);
+  return cms;
+}
+
+void loop() {
+  float distance = getDistanceFromWall();
+  if (distance > 4) {//distance > 4 cm
+    moveForward(10);
+  } else {//distance <= 4 cm
+    launchBall();
   }
-  delay(10);
 }
