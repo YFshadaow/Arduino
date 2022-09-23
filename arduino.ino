@@ -9,6 +9,10 @@ int SERVO_PIN = 9;
 float SPEED_OF_SOUND = 0.0345;
 int THRESHOLD = 20;
 
+int SERVO_REST_DEGREE = 10;
+int SERVO_LAUNCH_DEGREE = 170;
+
+bool IS_MOVING;
 int COUNTER = 0;
 
 Servo SERVO;
@@ -39,19 +43,19 @@ void setup() {
   pinMode(ECHO_PIN, INPUT);
   Serial.begin(9600);
   SERVO.attach(SERVO_PIN, 1000, 2000);
-  SERVO.write(0);
+  SERVO.write(SERVO_REST_DEGREE);
 
-  //start moving at the start
-  startMoving();
+  delay(10000);
 }
 
 
 void launchBall() {
   //code to launch ball
   Serial.println("launch!");
-  SERVO.write(180);
+  SERVO.write(SERVO_LAUNCH_DEGREE);
   delay(2000);
-  SERVO.write(0);
+  SERVO.write(SERVO_REST_DEGREE); 
+  delay(2000);
 }
 
 //get distance from wall in centimeter
@@ -66,14 +70,26 @@ float getDistanceFromWall() {
 }
 
 void loop() {
+  SERVO.write(SERVO_REST_DEGREE);
   float distance = getDistanceFromWall();
   if (distance > THRESHOLD) {//distance > threshold
+    Serial.println("exceeds threshold");
+    /*
     if (COUNTER != 0) {
       COUNTER = 0;
       Serial.println("counter resets!");
     }
+    */
+    if (!IS_MOVING) {
+      Serial.println("start moving");
+      startMoving();
+      IS_MOVING = true;
+      
+    }
   } else {//distance <= threshold
-    if (COUNTER < 3) {
+    Serial.println("does not exceed threshold");
+    /*
+    if (COUNTER < 0) {
       COUNTER += 1;
       Serial.println("counter increases!");
     } else {//counter reaches 3 times
@@ -82,5 +98,12 @@ void loop() {
       launchBall();
       startMoving();
     }
+    */
+    if (IS_MOVING) {
+      Serial.println("stop moving");
+      stopMoving();
+      IS_MOVING = false;
+    }
+    launchBall();
   }
 }
