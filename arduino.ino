@@ -7,18 +7,18 @@ int MOTOR_PIN3 = 4;
 int MOTOR_PIN4 = 3;
 int SERVO_PIN = 9;
 float SPEED_OF_SOUND = 0.0345;
-int THRESHOLD = 20;
+int THRESHOLD = 14;
 
 int SERVO_REST_DEGREE = 10;
 int SERVO_LAUNCH_DEGREE = 170;
 
-bool IS_MOVING;
+bool IS_MOVING = false;
 int COUNTER = 0;
 
 Servo SERVO;
 
 //start moving forward
-void startMoving() {
+void startMoving() {  
   digitalWrite(MOTOR_PIN1, HIGH);
   digitalWrite(MOTOR_PIN2, HIGH);
   digitalWrite(MOTOR_PIN3, HIGH);
@@ -70,16 +70,11 @@ float getDistanceFromWall() {
 }
 
 void loop() {
+  delay(10);
   SERVO.write(SERVO_REST_DEGREE);
   float distance = getDistanceFromWall();
-  if (distance > THRESHOLD) {//distance > threshold
+  if (distance > THRESHOLD || distance <= 0) {//distance > threshold 
     Serial.println("exceeds threshold");
-    /*
-    if (COUNTER != 0) {
-      COUNTER = 0;
-      Serial.println("counter resets!");
-    }
-    */
     if (!IS_MOVING) {
       Serial.println("start moving");
       startMoving();
@@ -88,17 +83,6 @@ void loop() {
     }
   } else {//distance <= threshold
     Serial.println("does not exceed threshold");
-    /*
-    if (COUNTER < 0) {
-      COUNTER += 1;
-      Serial.println("counter increases!");
-    } else {//counter reaches 3 times
-      stopMoving();
-      COUNTER = 0;//reset counter
-      launchBall();
-      startMoving();
-    }
-    */
     if (IS_MOVING) {
       Serial.println("stop moving");
       stopMoving();
