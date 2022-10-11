@@ -7,7 +7,7 @@ int MOTOR_PIN3 = 4;
 int MOTOR_PIN4 = 3;
 int SERVO_PIN = 9;
 float SPEED_OF_SOUND = 0.0345;
-int THRESHOLD = 14;
+int THRESHOLD = 11; // distance from sensor to obstacle
 
 int SERVO_REST_DEGREE = 170;
 int SERVO_LAUNCH_DEGREE = 10;
